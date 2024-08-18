@@ -1,31 +1,56 @@
-class User():
-
-    def __init__(self, id, name, access_level_user):
-        self.id = id
+class User:
+    def __init__(self, user_id, name):
+        self._user_id = user_id
         self._name = name
-        self.__access_level_user = access_level_user
+        self._access_level = 'user'
+
+    def get_user_id(self):
+        return self._user_id
+
+    def get_name(self):
+        return self._name
+
+    def get_access_level(self):
+        return self._access_level
+
+    def set_name(self, name):
+        self._name = name
 
 
 class Admin(User):
+    def __init__(self, user_id, name):
+        super().__init__(user_id, name)
+        self._access_level = 'admin'
+        self._users = []
 
-    def __init__(self, id, name, access_level_user, access_level_admin):
-        super().__init__(id, name, access_level_user)
-        self.admin = access_level_admin
-        self.task_user = []
-
-    def add_user(self, id, name, access_level_user):
-        new_user = User(id, name, access_level_user)
-        self.task_user.append(new_user)
-
-    def remove_user(self, id):
-        user_to_remove = None
-        for user in self.task_user:
-            if user.id == id:
-                user_to_remove = user
-                break
-        if user_to_remove:
-            self.task_user.remove(user_to_remove)
-            print(f"Пользователь с id {id} успешно удален.")
+    def add_user(self, user):
+        if isinstance(user, User):
+            self._users.append(user)
+            print(f"User {user.get_name()} добавлен.")
         else:
-            print(f"Пользователь с id {id} не найден в списке.")
+            print("Invalid user.")
 
+    def remove_user(self, user_id):
+        for user in self._users:
+            if user.get_user_id() == user_id:
+                self._users.remove(user)
+                print(f"User {user.get_name()} удален.")
+                return
+        print(f"No user found with ID {user_id}.")
+
+    def list_users(self):
+        for user in self._users:
+            print(f"ID: {user.get_user_id()}, Name: {user.get_name()}, "
+                  f"Access Level: {user.get_access_level()}")
+
+
+admin = Admin(1, "Павел")
+user1 = User(2, "Макар")
+user2 = User(3, "Елена")
+
+admin.add_user(user1)
+admin.add_user(user2)
+admin.list_users()
+
+admin.remove_user(2)
+admin.list_users()
